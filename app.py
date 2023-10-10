@@ -42,7 +42,6 @@ import default_paths as dp
 import global_variables as gv
 
 from swap_mukham import SwapMukham
-from nsfw_checker import NSFWChecker
 
 from face_parsing import mask_regions_to_list
 
@@ -241,19 +240,10 @@ def process(
             mask = cv2.blur(mask, (int(fg_mask_softness), int(fg_mask_softness)))
         mask = mask.astype("float32") / 255.0
 
-    def nsfw_assertion(is_nsfw):
-        if is_nsfw:
-            message = "NSFW content detected !"
-            gr.Info(message)
-            assert not is_nsfw, message
-
     ## ------------------------------ IMAGE ------------------------------
 
     if target_type == "Image" and not test_mode:
         target = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
-
-        is_nsfw = SWAP_MUKHAM.nsfw_detector.check_image(target)
-        nsfw_assertion(is_nsfw)
 
         output = SWAP_MUKHAM.process_frame(
             [target, mask]
@@ -272,13 +262,6 @@ def process(
 
     elif target_type == "Video" and not test_mode:
         video_path = video_path.replace('"', '').strip()
-
-        if video_path in NSFW_CACHE.keys():
-            nsfw_assertion(NSFW_CACHE.get(video_path))
-        else:
-            is_nsfw = SWAP_MUKHAM.nsfw_detector.check_video(video_path)
-            NSFW_CACHE[video_path] = is_nsfw
-            nsfw_assertion(is_nsfw)
 
         temp_path = os.path.join(output_path, output_name)
         os.makedirs(temp_path, exist_ok=True)
@@ -364,9 +347,6 @@ def process(
 
         directory_path = directory_path.replace('"', '').strip()
         image_paths = get_images_from_directory(directory_path)
-
-        is_nsfw = SWAP_MUKHAM.nsfw_detector.check_image_paths(image_paths)
-        nsfw_assertion(is_nsfw)
 
         new_image_paths = copy_files_to_directory(image_paths, temp_path)
 

@@ -6,7 +6,6 @@ INSWAPPER_PATH = "./assets/pretrained_models/inswapper_128.onnx"
 FACE_PARSER_PATH = "./assets/pretrained_models/faceparser.onnx"
 ARCFACE_PATH = "./assets/pretrained_models/w600k_r50.onnx"
 RETINAFACE_PATH = "./assets/pretrained_models/det_10g.onnx"
-OPEN_NSFW_PATH = "./assets/pretrained_models/open-nsfw.onnx"
 GENDERAGE_PATH = "./assets/pretrained_models/gender_age.onnx"
 
 CODEFORMER_PATH = "./assets/pretrained_models/codeformer.onnx"

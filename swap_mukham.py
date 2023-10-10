@@ -11,13 +11,10 @@ from face_parsing import FaceParser
 from face_upscaler import get_available_upscalers_names, cv2_upscalers, load_face_upscaler
 from face_analyser import AnalyseFace, single_face_detect_conditions, face_detect_conditions, get_single_face, is_similar_face
 
-from nsfw_checker import NSFWChecker
-
 get_device_name = lambda x: x.lower().replace("executionprovider", "")
 
 class SwapMukham:
     def __init__(self, device='cpu'):
-        self.load_nsfw_detector(device=device)
         self.load_face_swapper(device=device)
         self.load_face_analyser(device=device)
         # self.load_face_parser(device=device)
@@ -47,12 +44,6 @@ class SwapMukham:
         self.analyser.detection_threshold = args.get('face_detection_threshold', 0.5)
         self.analyser.detection_size = args.get('face_detection_size', (640, 640))
         self.analyser.detect_condition = args.get('face_detection_condition', 'best detection')
-
-    def load_nsfw_detector(self, device='cpu'):
-        device, provider, options = get_device_and_provider(device=device)
-        self.nsfw_detector = NSFWChecker(model_path=dp.OPEN_NSFW_PATH, provider=provider, session_options=options)
-        _device = get_device_name(self.nsfw_detector.session.get_providers()[0])
-        print(f"[{_device}] NSFW detector model loaded.")
 
     def load_face_swapper(self, device='cpu'):
         device, provider, options = get_device_and_provider(device=device)
